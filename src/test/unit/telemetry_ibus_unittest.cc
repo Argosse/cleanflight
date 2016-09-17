@@ -40,6 +40,7 @@ extern "C" {
 
     int16_t telemTemperature1 = 0;
     int32_t baroTemperature = 50;
+    int16_t test_virtual_gps_lat = 34.3555f;
 }
 
         
@@ -432,4 +433,9 @@ TEST_F(IbusTelemteryProtocolUnitTestDaisyChained, Test_IbusRespondToGetMeasureme
     //then we respond with: I'm reading 100 rpm
     rcCommand[THROTTLE] = 100;
     checkResponseToCommand("\x04\xA5\x56\xff", 4, "\x06\xA5\x64\x00\xf0\xFe", 6);
+    
+    //Given ibus command: Sensor at address 6, please send your measurement
+    //then we respond with: I'm reading latitude 33.3555;
+    //test_virtual_gps_lat = GPS[lat]
+    checkResponseToCommand("\x04\xA6\x56\xff", 4, "\x06\xA6\x3e8\x00\xf0\xFe", 6);
 }

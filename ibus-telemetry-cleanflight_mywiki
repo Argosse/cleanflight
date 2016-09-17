@@ -1,0 +1,15 @@
+Working in [telemetry/ibus.c](https://github.com/Argosse/cleanflight/blob/ibus-telemetry/src/main/telemetry/ibus.c)
+
+Need a way to report back as address 0x04 and 0x05 etc etc and say we are a voltage or rpm sensor. Then store our address, say we want gps:
+
+receiver queries address 0x04: cleanflight reports 'yes we are here'
+receiver queries 0x04 for type: cf reports 'we are a voltage sensor' (we will be reporting .4f decimal data? lat/lon)
+receiver queries 0x04 for measurement: cf::   if( GPS && GPSAVAILABLE ){ sendMeasurement( GPS[lat] ); }
+
+receiver queries address 0x05: cleanflight reports 'yes we are here'
+receiver queries 0x04 for type: cf reports 'we are a voltage sensor' (we will be reporting .4f decimal data? lat/lon)
+receiver queries 0x04 for measurement: cf::   if( GPS && GPSAVAILABLE ){ sendMeasurement( GPS[lon] ); }
+
+
+Tried adding to enum ibusSensorType_e SENSOR_VIRTUAL_TEST_SENS 0x04
+and corresponding SENSOR_VIRTUAL_TEST_SENS in sensor lookup but that causes cf to report back with improper sensor type.

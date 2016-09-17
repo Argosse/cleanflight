@@ -262,7 +262,9 @@ static ibusAddress_t getAddress(uint8_t ibusPacket[static IBUS_MIN_LEN]) {
     return (ibusPacket[1] & 0x0F);
 }
 
+
 static void dispatchMeasurementRequest(ibusAddress_t address) {
+    
     switch (SENSOR_ADDRESS_TYPE_LOOKUP[address - ibusBaseAddress]) {
         case IBUS_SENSOR_TYPE_EXTERNAL_VOLTAGE: {
             uint16_t value = vbat * 10;
@@ -290,6 +292,16 @@ static void dispatchMeasurementRequest(ibusAddress_t address) {
 	}
 }
 
+bool usingAddr4 = true;
+bool addr4Init = false;
+
+bool usingAddr5 = true;
+bool addr5Init = false;
+
+static void dispatchCustomMeasurement(uint8_t virtualSensorType) {
+    sendIbusMeasurement(virtualSensorType, (uint16_t)1024);
+}
+
 static void respondToIbusRequest(uint8_t ibusPacket[static IBUS_RX_BUF_LEN]) {
     ibusAddress_t returnAddress = getAddress(ibusPacket);
     
@@ -308,6 +320,15 @@ static void respondToIbusRequest(uint8_t ibusPacket[static IBUS_RX_BUF_LEN]) {
             sendIbusSensorType(returnAddress);
         } else if (isCommand(IBUS_COMMAND_MEASUREMENT, ibusPacket)) {
             dispatchMeasurementRequest(returnAddress);
+        }
+        else if(usingAddr4 && returnAddress == 0x04) {
+            if (isCommand(IBUS_COMMAND_DISCOVER_SENSOR, ibusPacket)) {
+                sendIbusCommand(0x04);
+            } else if (isCommand(IBUS_COMMAND_SENSOR_TYPE, ibusPacket)) {
+                sendIbusSensorType(IBUS_SENSOR_TYPE_EXTERNAL_VOLTAGE);
+            } else if (isCommand(IBUS_COMMAND_MEASUREMENT, ibusPacket)) {
+                dispatchCustomMeasurement(0x04);
+            }
         }
     }
 }

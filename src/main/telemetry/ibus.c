@@ -287,6 +287,7 @@ static void dispatchMeasurementRequest(ibusAddress_t address) {
             sendIbusMeasurement(address, (uint16_t) rcCommand[THROTTLE]);
             break;
         }
+	}
 }
 
 static void respondToIbusRequest(uint8_t ibusPacket[static IBUS_RX_BUF_LEN]) {

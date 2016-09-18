@@ -298,8 +298,8 @@ bool addr4Init = false;
 bool usingAddr5 = true;
 bool addr5Init = false;
 
-static void dispatchCustomMeasurement(uint8_t virtualSensorType) {
-    sendIbusMeasurement(virtualSensorType, (uint16_t)1024);
+static void dispatchCustomMeasurement(uint8_t virtualSensorAddress) {
+    sendIbusMeasurement(virtualSensorAddress, (uint16_t)1024);
 }
 
 static void respondToIbusRequest(uint8_t ibusPacket[static IBUS_RX_BUF_LEN]) {

@@ -298,8 +298,8 @@ bool addr4Init = false;
 bool usingAddr5 = true;
 bool addr5Init = false;
 
-static void dispatchCustomMeasurement(uint8_t virtualSensorAddress) {
-    sendIbusMeasurement(virtualSensorAddress, (uint16_t)1024);
+static void dispatchCustomMeasurement(ibusAddress_t virtualSensorAddress) {
+    sendIbusMeasurement(virtualSensorAddress, (uint16_t)1337);
 }
 
 static void respondToIbusRequest(uint8_t ibusPacket[static IBUS_RX_BUF_LEN]) {
@@ -323,11 +323,11 @@ static void respondToIbusRequest(uint8_t ibusPacket[static IBUS_RX_BUF_LEN]) {
         }
         else if(usingAddr4 && returnAddress == 0x04) {
             if (isCommand(IBUS_COMMAND_DISCOVER_SENSOR, ibusPacket)) {
-                sendIbusCommand(0x04);
+                sendIbusCommand(returnAddress);
             } else if (isCommand(IBUS_COMMAND_SENSOR_TYPE, ibusPacket)) {
-                sendIbusSensorType(IBUS_SENSOR_TYPE_EXTERNAL_VOLTAGE);
+                sendIbusSensorType(IBUS_SENSOR_TYPE_RPM);
             } else if (isCommand(IBUS_COMMAND_MEASUREMENT, ibusPacket)) {
-                dispatchCustomMeasurement(0x04);
+                dispatchCustomMeasurement(returnAddress);
             }
         }
     }
